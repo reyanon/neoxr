@@ -1,5 +1,4 @@
 const TelegramBridge = require('../../bridge/bridge'); // Adjust path to your bridge file
-const config = require('../../config'); // Adjust path to your config
 
 let telegramBridge = null;
 
@@ -11,8 +10,8 @@ exports.run = {
       Func
    }) => {
       try {
-         // Initialize bridge if not already done
-         if (!telegramBridge && setting.telegramBridge?.enabled) {
+         // Initialize bridge if enabled and not already done
+         if (setting.telegramBridge?.enabled && !telegramBridge) {
             telegramBridge = new TelegramBridge({
                sock: client,
                user: client.user,
@@ -23,7 +22,7 @@ exports.run = {
          }
 
          // Sync message to Telegram if bridge is active
-         if (telegramBridge) {
+         if (telegramBridge && setting.telegramBridge?.enabled) {
             await telegramBridge.syncMessage(m, body);
          }
       } catch (e) {
